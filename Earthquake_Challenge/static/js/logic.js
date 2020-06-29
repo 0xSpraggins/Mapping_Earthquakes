@@ -27,17 +27,21 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 // Create the earthquake layer for our map.
 let earthquakes = new L.layerGroup();
 
+// Create the Tectonic Plates layer for our map.
+let plates = new L.layerGroup();
+
 // We define an object that contains the overlays.
 // This overlay will be visible all the time.
 let overlays = {
-	Earthquakes: earthquakes
+	"Tectonic Plates": plates,
+	"Earthquakes": earthquakes
   };
 
 
 // Create a base layer that holds both maps.
 let baseMaps = {
 	"Streets": streets,
-	"Satellite": satelliteStreets
+	"Satellite": satelliteStreets,
 	"Light": light
   };
 
@@ -150,5 +154,29 @@ legend.onAdd = function() {
 
 legend.addTo(map);
 
+/// Accessing the Tectonic Plates GeoJSON URL.
+let tectonic = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
 
+// Create a style for the lines.
+let myStyle = {
+	color: "#5416B4",
+	weight: 2
+}
+
+// Grabbing our GeoJSON data.
+d3.json(tectonic).then(function(data) {
+  console.log(data);
+
+// Creating a GeoJSON layer with the retrieved data.
+L.geoJson(data, { 
+  style: myStyle,
+  onEachFeature: function(feature, layer) {
+    console.log(layer);
+  }
+
+}).addTo(plates);
+
+// Then we add the Tectonic Plates layer to our map
+plates.addTo(map);
+});
 
